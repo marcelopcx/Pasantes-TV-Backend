@@ -1,0 +1,42 @@
+meta {
+  name: Listar canales
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/channels/list
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+script:post-response {
+  if (res.status === 200 && Array.isArray(res.body) && res.body.length > 0) {
+    const channel = res.body[0];
+    if (channel.id != null) {
+      bru.setEnvVar("channelId", channel.id);
+    }
+    if (channel.name) {
+      bru.setEnvVar("channelName", channel.name);
+    }
+  }
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("devuelve un array", function () {
+    expect(res.body).to.be.an("array");
+  });
+}
+
+docs {
+  `GET /channels/list` — lista todos los canales.
+  Si hay resultados, guarda `channelId` y `channelName` en el entorno.
+}
