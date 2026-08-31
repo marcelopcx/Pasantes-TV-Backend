@@ -24,5 +24,6 @@ public class ChannelController {
     public Channel getChannelById(@RequestBody Channel channel) { return service.findById(channel.getId()); }
     @PostMapping("/name")
     public List<Channel> getChannelByName(@RequestBody Channel channel) { return service.findByName(channel.getName()); }
-
+    @PostMapping("/category")
+    public List<Channel> getChannelByCategory(@RequestBody Channel channel) { return service.findByCategory(channel.getCategory()); }
 }

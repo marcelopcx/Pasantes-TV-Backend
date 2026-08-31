@@ -17,6 +17,7 @@ public class Channel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String name;
+    String category;
     @Column(columnDefinition = "TEXT")
     String url_m3u8;
     @Column(columnDefinition = "TEXT")

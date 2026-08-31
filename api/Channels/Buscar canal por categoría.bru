@@ -1,11 +1,11 @@
 meta {
-  name: Eliminar canal
+  name: Buscar canal por categoría
   type: http
-  seq: 6
+  seq: 5
 }
 
-delete {
-  url: {{baseUrl}}/channels
+post {
+  url: {{baseUrl}}/channels/id
   body: json
   auth: inherit
 }
@@ -27,5 +27,6 @@ tests {
 }
 
 docs {
-  `DELETE /channels` con body `{ "id": 31 }`.
+  `POST /channels/id` con body `{ "id": 31 }`.
+  Si no existe, el servicio devuelve `null`.
 }

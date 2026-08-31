@@ -19,4 +19,5 @@ public class ChannelService {
     public List<Channel> findAll() { return repository.findAll(); }
     public Channel findById(Long id) { return repository.findById(id).orElse(null); }
     public List<Channel> findByName(String name) { return repository.findByName(name); }
+    public List<Channel> findByCategory(String category) { return repository.findByCategory(category); }
 }

@@ -10,5 +10,7 @@ import java.util.List;
 public interface ChannelRepository extends JpaRepository<Channel, Long> {
     @Query("SELECT c FROM Channel c WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')) OR SOUNDEX(c.name) = SOUNDEX(:name)")
     List<Channel> findByName(@Param("name") String name);
+    @Query("SELECT c FROM Channel c WHERE c.category = :category")
+    List<Channel> findByCategory(@Param("category") String category);
 
 }
