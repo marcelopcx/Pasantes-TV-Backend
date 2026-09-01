@@ -5,14 +5,14 @@ meta {
 }
 
 post {
-  url: {{baseUrl}}/channels/id
+  url: {{baseUrl}}/channels/category
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "id":"31"
+    "category": "Deportes"
   }
 }
 
@@ -24,9 +24,12 @@ tests {
   test("status 200", function () {
     expect(res.status).to.equal(200);
   });
+
+  test("devuelve un array", function () {
+    expect(res.body).to.be.an("array");
+  });
 }
 
 docs {
-  `POST /channels/id` con body `{ "id": 31 }`.
-  Si no existe, el servicio devuelve `null`.
+  `POST /channels/category` con body `{ "category": "Deportes" }`.
 }

@@ -1,0 +1,42 @@
+meta {
+  name: Listar categorías
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/categories/list
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+script:post-response {
+  if (res.status === 200 && Array.isArray(res.body) && res.body.length > 0) {
+    const category = res.body[0];
+    if (category.id != null) {
+      bru.setEnvVar("categoryId", category.id);
+    }
+    if (category.name) {
+      bru.setEnvVar("categoryName", category.name);
+    }
+  }
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("devuelve un array", function () {
+    expect(res.body).to.be.an("array");
+  });
+}
+
+docs {
+  `GET /categories/list` — lista todas las categorías.
+  Si hay resultados, guarda `categoryId` y `categoryName` en el entorno.
+}

@@ -15,6 +15,7 @@ public class ChannelController {
     public ChannelController(ChannelService service) {
         this.service = service;
     }
+
     @PostMapping
     public Channel save(@RequestBody Channel channel) { return service.save(channel); }
     @DeleteMapping

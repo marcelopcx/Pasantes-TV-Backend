@@ -12,5 +12,4 @@ public interface ChannelRepository extends JpaRepository<Channel, Long> {
     List<Channel> findByName(@Param("name") String name);
     @Query("SELECT c FROM Channel c WHERE c.category = :category")
     List<Channel> findByCategory(@Param("category") String category);
-
 }

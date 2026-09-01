@@ -14,15 +14,16 @@ headers {
 docs {
   Colección para probar el API de Pasantes TV.
 
-  1. Abre esta carpeta `bruno/` en Bruno (Open Collection).
+  1. Abre esta carpeta `api/` en Bruno (Open Collection).
   2. Selecciona el entorno **Local**.
   3. Arranca el backend en el puerto 8080.
-  4. Ejecuta los requests de la carpeta Channels.
+  4. Ejecuta los requests de las carpetas Channels y Categories.
 
   Si recibes 401/403, Spring Security está bloqueando las rutas.
-  Envía un Bearer token en `accessToken` o permite `/channels/**` en la config de seguridad.
+  Envía un Bearer token en `accessToken` o permite las rutas en la config de seguridad.
 
   Los POST y DELETE envían JSON en el body (`Content-Type: application/json`).
-  Ejemplo crear: `{ "name": "...", "url_m3u8": "...", "url_image": "..." }`
-  Ejemplo buscar/eliminar: `{ "id": 1 }` o `{ "name": "Cinemax" }`.
+  Ejemplo crear canal: `{ "name": "...", "category": "...", "url_m3u8": "...", "url_image": "..." }`
+  Ejemplo crear categoría: `{ "name": "Deportes" }`
+  Ejemplo buscar/eliminar: `{ "id": 1 }`, `{ "name": "Cinemax" }` o `{ "category": "Deportes" }`.
 }
