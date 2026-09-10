@@ -1,5 +1,6 @@
 package com.pasantes_airtek.pasantestv.controller;
 
+import com.pasantes_airtek.pasantestv.dto.ChannelHeartbeatDTO;
 import com.pasantes_airtek.pasantestv.model.Channel;
 import com.pasantes_airtek.pasantestv.service.ChannelService;
 import com.pasantes_airtek.pasantestv.service.ChannelActivityService;
@@ -32,11 +33,11 @@ public class ChannelController {
     @PostMapping("/category")
     public List<Channel> getChannelByCategory(@RequestBody Channel channel) { return service.findByCategory(channel.getCategory()); }
     @PostMapping("/heartbeat")
-    public void heartbeat(@RequestBody Channel channel, String viewerId) {
-        channelActivityService.registerChannelRequest(viewerId, channel.getId());
+    public void heartbeat(@RequestBody ChannelHeartbeatDTO request) {
+        channelActivityService.registerChannelRequest(request.getViewerId(), request.getId());
     }
     @PostMapping("/leave")
-    public void leave(@RequestBody Channel channel, String viewerId) {
-        channelActivityService.unregisterChannelRequest(viewerId, channel.getId());
+    public void leave(@RequestBody ChannelHeartbeatDTO request) {
+        channelActivityService.unregisterChannelRequest(request.getViewerId(), request.getId());
     }
 }
