@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/stats/active-users
+  url: {{baseURL}}/stats/active-users
   body: none
   auth: inherit
 }
 
 vars:pre-request {
-  baseUrl: https://pasantes-tv-backend-production.up.railway.app
+  baseUrl: localhost:8080
 }
 
 tests {

@@ -5,22 +5,22 @@ meta {
 }
 
 post {
-  url: {{baseUrl}}/channels/leave
+  url: {{baseURL}}/channels/leave
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "id": {{channelId}},
-    "viewerId": "{{viewerId}}"
+    "id": 57,
+    "viewerId": "hola"
   }
 }
 
 vars:pre-request {
   channelId: 57
   viewerId: user-frontend-001
-  baseUrl: https://pasantes-tv-backend-production.up.railway.app
+  baseUrl: localhost:8080
 }
 
 tests {
