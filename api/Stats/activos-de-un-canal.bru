@@ -1,0 +1,32 @@
+meta {
+  name: Activos de un canal
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/stats/active-users/by-channel/{{channelId}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  baseUrl: https://pasantes-tv-backend-production.up.railway.app
+  channelId: 1
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("devuelve channelName y activeUsers", function () {
+    expect(res.body).to.be.an("object");
+    expect(res.body.channelName).to.be.a("string");
+    expect(res.body.activeUsers).to.be.a("number");
+  });
+}
+
+docs {
+  `GET /stats/active-users/by-channel/{channelId}` — activos de un canal específico.
+}

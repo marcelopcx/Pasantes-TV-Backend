@@ -1,7 +1,7 @@
 meta {
   name: Buscar canal por categoría
   type: http
-  seq: 5
+  seq: 6
 }
 
 post {
@@ -17,14 +17,14 @@ body:json {
 }
 
 vars:pre-request {
-  baseUrl: http://localhost:8080
+  baseUrl: https://pasantes-tv-backend-production.up.railway.app
 }
 
 tests {
   test("status 200", function () {
     expect(res.status).to.equal(200);
   });
-
+  
   test("devuelve un array", function () {
     expect(res.body).to.be.an("array");
   });

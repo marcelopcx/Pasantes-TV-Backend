@@ -2,6 +2,8 @@ package com.pasantes_airtek.pasantestv.controller;
 
 import com.pasantes_airtek.pasantestv.model.Channel;
 import com.pasantes_airtek.pasantestv.service.ChannelService;
+import com.pasantes_airtek.pasantestv.service.ChannelActivityService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,9 +13,11 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class ChannelController {
     private final ChannelService service;
+    private final ChannelActivityService channelActivityService;
 
-    public ChannelController(ChannelService service) {
+    public ChannelController(ChannelService service, ChannelActivityService channelActivityService) {
         this.service = service;
+        this.channelActivityService = channelActivityService;
     }
 
     @PostMapping
@@ -28,4 +32,8 @@ public class ChannelController {
     public List<Channel> getChannelByName(@RequestBody Channel channel) { return service.findByName(channel.getName()); }
     @PostMapping("/category")
     public List<Channel> getChannelByCategory(@RequestBody Channel channel) { return service.findByCategory(channel.getCategory()); }
+    @PostMapping("/heartbeat")
+    public void heartbeat(@RequestBody Channel channel, HttpServletRequest request) {
+        channelActivityService.registerChannelRequest(request, channel.getId());
+    }
 }

@@ -1,22 +1,23 @@
 meta {
-  name: Buscar categoría por id
+  name: Marcar usuario activo en canal
   type: http
-  seq: 3
+  seq: 2
 }
 
 post {
-  url: {{baseUrl}}/categories/id
+  url: {{baseUrl}}/channels/heartbeat
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "id": "1"
+    "id": {{channelId}}
   }
 }
 
 vars:pre-request {
+  channelId: 1
   baseUrl: https://pasantes-tv-backend-production.up.railway.app
 }
 
@@ -27,6 +28,6 @@ tests {
 }
 
 docs {
-  `POST /categories/id` con body `{ "id": 1 }`.
-  Si no existe, el servicio devuelve `null`.
+  `POST /channels/heartbeat` — registra actividad del usuario actual (IP) en el canal enviado.
+  Body mínimo: `{ "id": <channelId> }`.
 }

@@ -1,11 +1,11 @@
 meta {
-  name: Listar categorías
+  name: Lista activos por canal
   type: http
-  seq: 1
+  seq: 2
 }
 
 get {
-  url: {{baseUrl}}/categories/list
+  url: {{baseUrl}}/stats/active-users/by-channel
   body: none
   auth: inherit
 }
@@ -16,12 +16,9 @@ vars:pre-request {
 
 script:post-response {
   if (res.status === 200 && Array.isArray(res.body) && res.body.length > 0) {
-    const category = res.body[0];
-    if (category.id != null) {
-      bru.setEnvVar("categoryId", category.id);
-    }
-    if (category.name) {
-      bru.setEnvVar("categoryName", category.name);
+    const channel = res.body[0];
+    if (channel.channelName) {
+      bru.setEnvVar("activeChannelName", channel.channelName);
     }
   }
 }
@@ -37,6 +34,5 @@ tests {
 }
 
 docs {
-  `GET /categories/list` — lista todas las categorías.
-  Si hay resultados, guarda `categoryId` y `categoryName` en el entorno.
+  `GET /stats/active-users/by-channel` — devuelve [{ channelName, activeUsers }].
 }

@@ -1,0 +1,30 @@
+meta {
+  name: Total espectadores activos
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/stats/active-users
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  baseUrl: https://pasantes-tv-backend-production.up.railway.app
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("devuelve activeUsers numérico", function () {
+    expect(res.body).to.be.an("object");
+    expect(res.body.activeUsers).to.be.a("number");
+  });
+}
+
+docs {
+  `GET /stats/active-users` — total de espectadores activos del sistema.
+}
