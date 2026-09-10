@@ -1,11 +1,11 @@
 meta {
-  name: Marcar usuario activo en canal
+  name: Marcar usuario inactivo en canal
   type: http
-  seq: 2
+  seq: 3
 }
 
 post {
-  url: {{baseUrl}}/channels/heartbeat
+  url: {{baseUrl}}/channels/leave
   body: json
   auth: inherit
 }
@@ -30,6 +30,6 @@ tests {
 }
 
 docs {
-  `POST /channels/heartbeat` — registra actividad por código único (`viewerId`) en el canal enviado.
+  `POST /channels/leave` — marca al usuario como inactivo en ese canal y lo descuenta del contador sin esperar la ventana de tiempo.
   Body mínimo: `{ "id": <channelId>, "viewerId": "<codigoUnico>" }`.
 }

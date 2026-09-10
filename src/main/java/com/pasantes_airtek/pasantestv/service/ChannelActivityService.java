@@ -17,7 +17,7 @@ public class ChannelActivityService {
 
     private static final Duration ACTIVE_WINDOW = Duration.ofMinutes(5);
     private final ChannelService channelService;
-    private final Map<String, Map<String, Instant>> lastSeenByChannelAndIp = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, Instant>> lastSeenByChannelAndViewerId = new ConcurrentHashMap<>();
 
     public ChannelActivityService(ChannelService channelService) {
         this.channelService = channelService;
@@ -27,41 +27,60 @@ public class ChannelActivityService {
         Instant now = Instant.now();
         int total = 0;
 
-        lastSeenByChannelAndIp.forEach((channelId, viewers) -> {
+        lastSeenByChannelAndViewerId.forEach((channelId, viewers) -> {
             viewers.entrySet().removeIf(entry ->
                     Duration.between(entry.getValue(), now).compareTo(ACTIVE_WINDOW) > 0
             );
         });
 
-        lastSeenByChannelAndIp.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+        lastSeenByChannelAndViewerId.entrySet().removeIf(entry -> entry.getValue().isEmpty());
 
-        for (Map<String, Instant> viewers : lastSeenByChannelAndIp.values()) {
+        for (Map<String, Instant> viewers : lastSeenByChannelAndViewerId.values()) {
             total += viewers.size();
         }
 
         return total;
     }
 
-    public void registerChannelRequest(HttpServletRequest request, Long channelId) {
+    public void registerChannelRequest(String viewerId, Long channelId) {
         if (channelId == null) {
             return;
         }
-        String ip = getClientIp(request);
-        if (ip == null || ip.isBlank()) {
+        if (viewerId == null || viewerId.isBlank()) {
             return;
         }
         Instant now = Instant.now();
         String channelKey = String.valueOf(channelId);
-        lastSeenByChannelAndIp
+        lastSeenByChannelAndViewerId
                 .computeIfAbsent(channelKey, key -> new ConcurrentHashMap<>())
-                .put(ip, now);
+                .put(viewerId, now);
+    }
+
+    public void unregisterChannelRequest(String viewerId, Long channelId) {
+        if (channelId == null) {
+            return;
+        }
+        if (viewerId == null || viewerId.isBlank()) {
+            return;
+        }
+
+        String channelKey = String.valueOf(channelId);
+        Map<String, Instant> viewers = lastSeenByChannelAndViewerId.get(channelKey);
+        if (viewers == null) {
+            return;
+        }
+
+        viewers.remove(viewerId);
+        if (viewers.isEmpty()) {
+            lastSeenByChannelAndViewerId.remove(channelKey);
+        }
     }
 
     public List<ChannelActiveUsersDTO> getActiveUsersByChannel() {
         Instant now = Instant.now();
         List<ChannelActiveUsersDTO> result = new ArrayList<>();
 
-        lastSeenByChannelAndIp.forEach((channelId, viewers) -> {
+        lastSeenByChannelAndViewerId.forEach((channelId, viewers) -> {
             viewers.entrySet().removeIf(entry ->
                     Duration.between(entry.getValue(), now).compareTo(ACTIVE_WINDOW) > 0
             );
@@ -76,7 +95,7 @@ public class ChannelActivityService {
             }
         });
 
-        lastSeenByChannelAndIp.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+        lastSeenByChannelAndViewerId.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         return result;
     }
 
@@ -85,7 +104,7 @@ public class ChannelActivityService {
             return new ChannelActiveUsersDTO("Canal", 0);
         }
         Instant now = Instant.now();
-        Map<String, Instant> viewers = lastSeenByChannelAndIp.get(String.valueOf(channelId));
+        Map<String, Instant> viewers = lastSeenByChannelAndViewerId.get(String.valueOf(channelId));
         Channel channel = channelService.findById(channelId);
         String channelName = channel != null ? channel.getName() : "Canal " + channelId;
         if (viewers == null) {
@@ -95,17 +114,9 @@ public class ChannelActivityService {
                 Duration.between(entry.getValue(), now).compareTo(ACTIVE_WINDOW) > 0
         );
         if (viewers.isEmpty()) {
-            lastSeenByChannelAndIp.remove(String.valueOf(channelId));
+            lastSeenByChannelAndViewerId.remove(String.valueOf(channelId));
             return new ChannelActiveUsersDTO(channelName, 0);
         }
         return new ChannelActiveUsersDTO(channelName, viewers.size());
-    }
-
-    private String getClientIp(HttpServletRequest request) {
-        String xff = request.getHeader("X-Forwarded-For");
-        if (xff != null && !xff.isBlank()) {
-            return xff.split(",")[0].trim();
-        }
-        return request.getRemoteAddr();
     }
 }
